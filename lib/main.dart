@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:pinterest_flutter/routes/homepage/homePage.dart';
-import 'package:pinterest_flutter/routes/Login/loginRoute.dart';
-import 'package:get/get.dart';
+import 'package:pinterest_flutter/providers/form_provider.dart';
+import 'package:pinterest_flutter/providers/pin_provider.dart';
+import 'package:pinterest_flutter/providers/user_provider.dart';
+import 'package:pinterest_flutter/screens/home_page/home_page.dart';
+import 'package:provider/provider.dart';
+import 'package:pinterest_flutter/screens/login/login.dart';
 
 void main() {
+  Provider.debugCheckInvalidValueType = null;
   runApp(const MyApp());
 }
 
@@ -12,34 +16,26 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
-      theme: ThemeData(
-          primarySwatch: Colors.blue,
-          canvasColor: Colors.black,
-          fontFamily: 'PT Sans',
-          textTheme: TextTheme(
-              headline6: TextStyle(
-            color: Colors.white,
-          ))),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+    return MultiProvider(
+      providers: [
+        Provider<UserProvider>(create: (_) => UserProvider()),
+        Provider<FormProvider>(create: (_) => FormProvider()),
+        Provider<PinProvider>(create: (_) => PinProvider()),
+      ],
+      child: Consumer<UserProvider>(
+        builder: ((context, userProvider, child) => MaterialApp(
+              debugShowCheckedModeBanner: false,
+              theme: ThemeData(
+                  primarySwatch: Colors.blue,
+                  canvasColor: Colors.black,
+                  fontFamily: 'PT Sans',
+                  textTheme: Theme.of(context).textTheme.apply(
+                        bodyColor: Colors.white,
+                        displayColor: Colors.white,
+                      )),
+              home: userProvider.isLoggedIn ? Text('logged in') : Login(),
+            )),
+      ),
     );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  @override
-  Widget build(BuildContext context) {
-    return HomePage();
   }
 }

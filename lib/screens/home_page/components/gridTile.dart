@@ -3,18 +3,15 @@ import 'dart:convert';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:pinterest_flutter/routes/PinDetails/pindetails.dart';
+import 'package:pinterest_flutter/screens/pin_details/pin_details.dart';
+import 'package:pinterest_flutter/data/api_service.dart';
+import 'package:pinterest_flutter/models/pin.dart';
 
 class GridTileObject extends StatelessWidget {
-  String imageUrl;
-  Map jsonData;
-  var rating;
+  Pin pin;
   GridTileObject({
     Key? key,
-    required this.imageUrl,
-    required this.jsonData,
-    required this.rating,
+    required this.pin,
   }) : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -68,7 +65,7 @@ class GridTileObject extends StatelessWidget {
               context,
               MaterialPageRoute(
                   builder: (context) => PinDetails(
-                        details: jsonData,
+                        pin: pin,
                       )));
         },
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -76,7 +73,7 @@ class GridTileObject extends StatelessWidget {
             borderRadius: BorderRadius.circular(15),
             clipBehavior: Clip.hardEdge,
             child: CachedNetworkImage(
-              imageUrl: imageUrl,
+              imageUrl: pin.image,
               fit: BoxFit.fill,
               placeholder: (ctx, val) {
                 return CircularProgressIndicator();
@@ -96,7 +93,7 @@ class GridTileObject extends StatelessWidget {
                     ),
                   ),
                   TextSpan(
-                    text: rating.toString(),
+                    text: pin.rating.toString(),
                   ),
                 ],
               ),
